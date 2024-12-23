@@ -31,32 +31,27 @@
         .gender {
             display: flex;
             flex-direction: row-reverse;
+        }/*top, bottom, left, right*/
+        .relative {
+            position: relative;
+            left: 20px;
         }
-        .container {
-            display: flex;
-            background-color: red;
-            flex: 1;
+        .absolute {
+            position: absolute;
+            top: 0;
+            right: 0;
         }
-        .item-left {
-            background-color: red;
-            flex: 1;
+        .fixed {
+            position: fixed;
+            top: 0;
+            right: 0;
         }
-        .item-right {
-            background-color: blue;
-            flex: 2;
+        .sticky {
+            position: sticky;
+            top: 50px;
         }
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 2fr ;
-        }
-        .item-1,.item-3{
-            background-color: blue;
-        }
-        .item-2{
-            background-color: red;
-        }
-        .item-4{
-            background-color: black;
+        .container{
+            height: 1800px;
         }
 
     
@@ -64,15 +59,11 @@
 </head>
 <body>
     <div class="container">
-        <div class="item-left">Left</div>
-        <div class="item-right">Right</div>
-    </div>
-
-    <div class="grid-container">
-        <div class="item-1">item1</div>
-        <div class="item-2">item2</div> 
-        <div class="item-3">item3</div> 
-        <div class="item-4">item4</div> 
+    <div class="static">Staric</div>
+    <div class="relative">Relative</div>
+    <div class="absolute">Absolute</div>
+    <div class="fixed">Fixed</div>
+    <div class="sticky">Sticky</div>
 
     </div>
     <div id = "register">
