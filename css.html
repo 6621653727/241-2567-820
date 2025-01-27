@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        ul{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        .destop ul {
+            display: flex;
+        }
+        .destop ul > li{
+            margin-right: 20px;
+        }
+        @media screen and (max-width: 768px){
+            .destop{
+                display: none;
+            }
+           .mobile-menu{
+                display: block;
+            }
+            .mobile-menu:hover + .mobile{
+                display: block;
+            }
+         } 
+        .mobile-menu,
+        .nobile {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="destop">
+        <ul>
+            <li>Home</li>
+            <li>About</li>
+            <li>Contact</li>
+        </ul>
+    </div>
+    <div class="mobile-menu"></div>
+    <div class="mobile">
+        <ul>
+            <li>Home<li>
+            <li>About<li>
+            <li>Contact<li>
+        </ul>
+    </div>
+</body>
+</html>
