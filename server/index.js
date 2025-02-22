@@ -6,14 +6,41 @@ const mysql = require('mysql2/promise');
 app.use(bodyParser.json());
 let users = []
 let conn = null
+/*
+GET /users สำหรับ get users ทั้งหมด
+POST /users สำหรับ create user ใหม่บันทึกเข้าไป
+GET /users/:id สำหรับ get user รายคนที่ต้องการดู
+PUT /users/:id สำหรับ update user รายคนที่ต้องการบันทึกเข้าไป
+DELETE /users/:id สำหรับ delete user รายคนที่ต้องการลบออก
+*/
 const initMySQL = async () => {
   conn = await mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
+    database: 'webdb',
     port: 8830
   })
 }
+app.get('/testdb', (req, res) => {
+  mysql. createConnection({
+  host: 'localhost',
+  user:'root',
+  password: 'root',
+  database: 'webdb',
+  port: 8830
+  }) . then((conn) => {
+  conn
+  . query ( 'SELECT * FROM users' )
+  .then ((results) => {
+  res. json(results[0])
+  })
+  .catch((error) => {
+  console.log('Error fetching users:', error.message)
+  res.status(500).json({error: 'Error fetching users' })
+  })
+  })
+})
 app.get('/testdb-new', async (req, res) => {
   try {
     const result = await conn.query('SELECT * FROM users')
@@ -25,17 +52,21 @@ app.get('/testdb-new', async (req, res) => {
 })
 
 
+// path = GET /users สำหรับ get users ทั้งหมด
 app.get('/users', async(req, res) => {
-  const result = await conn.query('SELECT * FROM users')
-  res.json(users);
-})
-app.post('/users', async(req, res) => {
+  const results = await conn.query('SELECT * FROM users')
+  res. json(results[0])
+  
+  })
+  
+  // path = POST /users สำหรับ create user ใหม่บันทึกเข้าไป
+  app.post('/users', async(req, res) => {
   let user = req.body;
-  const result = await conn.query('INSERT INTO users ?',user)
-  console.log('Result: ', result)
+  const results = await conn.query('INSERT INTO users SET ?', user)
+  console.log('results', results)
   res.json({
-    message: 'Data has been added',
-    data: result[0]
+  message: "User created",
+  data: results[0]
   });
 })
 app.post('/user', (req, res) => {
@@ -68,6 +99,7 @@ app.put('/user/:id', (req, res) => {
 })
 app.delete('/user/:id', (req, res) => {
   let id = req.params.id;
+  // หา index ของ user ที่ต้องการลบ
   let selectedIndex = users.findIndex(user => user.id == id)
   users.splice(selectedIndex, 1)
   res.json({

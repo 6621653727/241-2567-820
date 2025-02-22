@@ -1,5 +1,5 @@
 function submitData(){
-    let firstNameDOM = document.querySelector('input[name="firstname"]')
+    let firstNameDOM = document.querySelector('input[name="firstname"]')//
     let lastnameDOM = document.querySelector('input[name="lastname"]')
     let genderDOM = document.querySelector('input[name="gender"]:checked')
     let ageDOM = document.querySelector('input[name="age"]')
