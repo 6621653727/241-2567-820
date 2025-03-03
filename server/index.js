@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const port = 8000;
 const mysql = require('mysql2/promise');
 app.use(bodyParser.json());
+const cors = require('cors');
+app.use(cors());
 let users = []
 let conn = null
 /*
@@ -59,16 +61,62 @@ app.get('/users', async(req, res) => {
   
   })
   
-  // path = POST /users สำหรับ create user ใหม่บันทึกเข้าไป
-  app.post('/users', async(req, res) => {
-  let user = req.body;
-  const results = await conn.query('INSERT INTO users SET ?', user)
-  console.log('results', results)
-  res.json({
-  message: "User created",
-  data: results[0]
-  });
+app.get('/users/:id', async(req, res) => {
+  try{
+    let id = req.params.id;
+    const results = await conn.query('SELECT * FROM users WHERE id = ?', id)
+    if(results[0].length == 0){
+      throw {statusCode: 404, message: 'User not found'}
+    }
+    res.json(results[0][0])
+  } catch (error) {
+    console.log('errorMessage',error.message)
+    let statusCode = error.statusCode || 500
+    res.status(statusCode).json({
+      message: 'something went wrong',
+      errorMessage: error.message
+    })
+  }
 })
+  // path = POST /users สำหรับ create user ใหม่บันทึกเข้าไป
+app.post('/users', async(req, res) => {
+    try{
+      let user = req.body;
+      const results = await conn.query('INSERT INTO users SET ?', user)
+      console.log('results', results)
+      res.json({
+      message: "User created",
+      data: results[0]
+      });
+    } catch (error) {
+      console.log('errorMessage',error.message)
+      res.status(500).json({
+        message: 'something went wrong',
+        errorMessage: error.message
+      })
+    }
+})
+app.put('/users/:id', async(req, res) => {
+  try{
+    let id = req.params.id;
+    let updateUser = req.body;
+    const results = await conn.query(
+      'UPDATE users SET ? WHERE id = ?', 
+      [updateUser, id]
+    )
+    res.json({
+    message: "Update User Completed",
+    data: results[0]
+    })
+  } catch (error) {
+    console.log('errorMessage',error.message)
+    res.status(500).json({
+      message: 'something went wrong',
+      errorMessage: error.message
+    })
+  }
+})
+
 app.post('/user', (req, res) => {
   let user = req.body;
   user.id = counter
@@ -97,15 +145,21 @@ app.put('/user/:id', (req, res) => {
     }
   });
 })
-app.delete('/user/:id', (req, res) => {
-  let id = req.params.id;
-  // หา index ของ user ที่ต้องการลบ
-  let selectedIndex = users.findIndex(user => user.id == id)
-  users.splice(selectedIndex, 1)
-  res.json({
-    message: "Delete Completed",
-    indexDeleted: selectedIndex
-  });
+app.delete('/users/:id', async (req, res) => {
+   try{
+    let id = req.params.id;
+    const results = await conn.query('Delete from users SET ? WHERE id = ?',id)
+    res.json({
+    message: "Delete User Completed",
+    data: results[0]
+    })
+  } catch (error) {
+    console.log('errorMessage',error.message)
+    res.status(500).json({
+      message: 'something went wrong',
+      errorMessage: error.message
+    })
+  }
 })
 app.listen(port, async(req, res) => {
   await initMySQL()
